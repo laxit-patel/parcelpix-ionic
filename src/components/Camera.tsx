@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonButton, IonInput, IonImg, IonAlert } from '@ionic/react';
 import { Camera as CapacitorCamera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 interface CameraProps {
-    setSavedPhotos: React.Dispatch<React.SetStateAction<{ uri: string; tags: string }[]>>;
-    savedPhotos: { uri: string; tags: string }[];
+    setSavedPhotos: (newPhoto: { uri: string; tags?: string }) => void; // Make tags optional
+    savedPhotos: { uri: string; tags?: string }[];
+    closeCamera: () => void; // Prop to close camera
 }
 
-const Camera: React.FC<CameraProps> = ({ setSavedPhotos, savedPhotos }) => {
+const Camera: React.FC<CameraProps> = ({ setSavedPhotos, closeCamera }) => {
     const [imageUri, setImageUri] = useState<string | undefined>();
     const [tags, setTags] = useState<string>('');
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+    const [alertMessage, setAlertMessage] = useState<string>('');
 
     useEffect(() => {
         const takePicture = async () => {
@@ -28,16 +32,17 @@ const Camera: React.FC<CameraProps> = ({ setSavedPhotos, savedPhotos }) => {
     }, []);
 
     const handleSave = () => {
-        if (imageUri && tags) {
-            const newPhoto = { uri: imageUri, tags };
-            setSavedPhotos([...savedPhotos, newPhoto]);
-
-            // Reset fields after saving
-            setTags('');
+        if (imageUri) {
+            const newPhoto = { uri: imageUri, tags: tags || undefined }; // Use tags if provided
+            setSavedPhotos(newPhoto);
             setImageUri(undefined);
-            alert('Photo saved successfully!');
+            setTags('');
+            setAlertMessage('Photo saved successfully!');
+            setShowAlert(true);
+            closeCamera();
         } else {
-            alert('Please enter tags to save the photo.');
+            setAlertMessage('No image captured. Please retake the photo.');
+            setShowAlert(true);
         }
     };
 
@@ -47,26 +52,34 @@ const Camera: React.FC<CameraProps> = ({ setSavedPhotos, savedPhotos }) => {
     };
 
     return (
-        <div>
-            <h1>Camera</h1>
-            {imageUri ? (
-                <div>
-                    <img src={imageUri} alt="Captured" />
-                    <div>
-                        <input
-                            type="text"
-                            placeholder="Enter tags"
+        <IonCard>
+            <IonCardHeader>
+                <IonCardTitle>Camera</IonCardTitle>
+            </IonCardHeader>
+            <IonCardContent>
+                {imageUri ? (
+                    <>
+                        <IonImg src={imageUri} alt="Captured" />
+                        <IonInput
                             value={tags}
-                            onChange={(e) => setTags(e.target.value)}
+                            placeholder="Enter tags (optional)"
+                            onIonChange={(e) => setTags(e.detail.value!)}
                         />
-                        <button onClick={handleSave}>Save Photo</button>
-                        <button onClick={handleRetake}>Retake Photo</button>
-                    </div>
-                </div>
-            ) : (
-                <p>No image captured yet.</p>
-            )}
-        </div>
+                        <IonButton expand="full" onClick={handleSave}>Save Photo</IonButton>
+                        <IonButton expand="full" onClick={handleRetake} color="light">Retake Photo</IonButton>
+                    </>
+                ) : (
+                    <p>No image captured yet.</p>
+                )}
+            </IonCardContent>
+            <IonAlert
+                isOpen={showAlert}
+                onDidDismiss={() => setShowAlert(false)}
+                header={'Notification'}
+                message={alertMessage}
+                buttons={['OK']}
+            />
+        </IonCard>
     );
 };
 
