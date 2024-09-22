@@ -1,5 +1,6 @@
 import React from 'react';
-import { IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonImg } from '@ionic/react';
+import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonImg } from '@ionic/react';
+import Placeholder from '../assets/placeholder.png';
 
 interface Photo {
     uri: string;
@@ -14,22 +15,26 @@ const Gallery: React.FC<GalleryProps> = ({ savedPhotos }) => {
     return (
         <div>
             {savedPhotos.length === 0 ? (
-                <p>No photos captured yet.</p>
+                <IonCard>
+                    <IonCardHeader>
+                        <IonCardTitle>No Photos Found</IonCardTitle>
+                        <IonCardSubtitle>Please take some photos</IonCardSubtitle>
+                    </IonCardHeader>
+                    <IonCardContent>
+                        <IonImg src={Placeholder} alt="Placeholder" />
+                    </IonCardContent>
+                </IonCard>
             ) : (
-                <IonGrid>
-                    <IonRow>
-                        {savedPhotos.map((photo, index) => (
-                            <IonCol size="6" sizeMd="4" sizeLg="3" key={index}>
-                                <IonCard>
-                                    <IonImg src={photo.uri} alt={`Captured ${index}`} />
-                                    <IonCardContent>
-                                        <p>Tags: {photo.tags}</p>
-                                    </IonCardContent>
-                                </IonCard>
-                            </IonCol>
-                        ))}
-                    </IonRow>
-                </IonGrid>
+                <div>
+                    {savedPhotos.map((photo, index) => (
+                        <IonCard key={index}>
+                            <IonImg src={photo.uri} alt={`Captured ${index}`} />
+                            <IonCardContent>
+                                <p>Tags: {photo.tags}</p>
+                            </IonCardContent>
+                        </IonCard>
+                    ))}
+                </div>
             )}
         </div>
     );
