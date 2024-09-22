@@ -5,7 +5,7 @@ import { Camera as CapacitorCamera, CameraResultType, CameraSource } from '@capa
 interface CameraProps {
     setSavedPhotos: (newPhoto: { uri: string; tags?: string }) => void; // Make tags optional
     savedPhotos: { uri: string; tags?: string }[];
-    closeCamera: () => void; // Prop to close camera
+    closeCamera: () => void;
 }
 
 const Camera: React.FC<CameraProps> = ({ setSavedPhotos, closeCamera }) => {

@@ -3,7 +3,7 @@ import { IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonImg } from '@ionic
 
 interface Photo {
     uri: string;
-    tags: string;
+    tags?: string;
 }
 
 interface GalleryProps {

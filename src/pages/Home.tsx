@@ -6,15 +6,15 @@ import Gallery from '../components/Gallery';
 
 const Home: React.FC = () => {
   const [showCamera, setShowCamera] = useState<boolean>(false);
-  const [savedPhotos, setSavedPhotos] = useState<{ uri: string; tags: string }[]>([]);
+  const [savedPhotos, setSavedPhotos] = useState<{ uri: string; tags?: string }[]>([]);
 
   const handleCameraOpen = () => {
-    setShowCamera(true); // Show camera when FAB is clicked
+    setShowCamera(true);
   };
 
-  const handlePhotoSaved = (newPhoto: { uri: string; tags: string }) => {
-    setSavedPhotos((prevPhotos) => [...prevPhotos, newPhoto]); // Add the new photo to the savedPhotos array
-    setShowCamera(false); // Close camera after saving
+  const handlePhotoSaved = (newPhoto: { uri: string; tags?: string }) => {
+    setSavedPhotos((prevPhotos) => [...prevPhotos, newPhoto]);
+    setShowCamera(false);
   };
 
   return (
@@ -30,9 +30,9 @@ const Home: React.FC = () => {
 
         {showCamera && (
           <Camera
-            setSavedPhotos={handlePhotoSaved} // Pass the correct function to setSavedPhotos
+            setSavedPhotos={handlePhotoSaved} // Ensure this matches the signature
             savedPhotos={savedPhotos}
-            closeCamera={() => setShowCamera(false)} // Close camera without saving
+            closeCamera={() => setShowCamera(false)}
           />
         )}
       </IonContent>
