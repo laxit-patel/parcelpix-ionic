@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonFab, IonFabButton, IonIcon, IonGrid, IonRow, IonCol, IonImg, IonActionSheet } from '@ionic/react';
 import { camera, trash, close } from 'ionicons/icons';
 import { usePhotoGallery, UserPhoto } from '../hooks/usePhotoGallery';
+import Gallery from '../components/Gallery'; // Import the newly created Gallery component
 
 const Home: React.FC = () => {
   const { deletePhoto, photos, takePhoto } = usePhotoGallery();
@@ -9,7 +10,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     takePhoto();
-  }, [photoToDelete]);
+  }, []);
 
   return (
     <IonPage>
@@ -24,15 +25,9 @@ const Home: React.FC = () => {
             <IonTitle size="large">Photo Gallery</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonGrid>
-          <IonRow>
-            {photos.map((photo, index) => (
-              <IonCol size="6" key={index}>
-                <IonImg onClick={() => setPhotoToDelete(photo)} src={photo.webviewPath} />
-              </IonCol>
-            ))}
-          </IonRow>
-        </IonGrid>
+
+        {/* Pass the photos array to the new Gallery component */}
+        <Gallery savedPhotos={photos} />
 
         <IonFab vertical="bottom" horizontal="end" slot="fixed">
           <IonFabButton onClick={() => takePhoto()}>
@@ -59,8 +54,6 @@ const Home: React.FC = () => {
           }]}
           onDidDismiss={() => setPhotoToDelete(undefined)}
         />
-
-
       </IonContent>
     </IonPage>
   );
